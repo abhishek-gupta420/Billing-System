@@ -1,5 +1,12 @@
 
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import project.ConnectionProvider;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -40,7 +47,6 @@ public class login extends javax.swing.JFrame {
         jLabel4 = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        setUndecorated(true);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
@@ -77,8 +83,8 @@ public class login extends javax.swing.JFrame {
         getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(1080, 520, -1, -1));
 
         jButton2.setFont(new java.awt.Font("Tahoma", 1, 14)); // NOI18N
-        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/billingsystem/bms/close Jframe.png"))); // NOI18N
-        jButton2.setText("Close");
+        jButton2.setIcon(new javax.swing.ImageIcon(getClass().getResource("/billingsystem/bms/login.png"))); // NOI18N
+        jButton2.setText("Sign Up");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -98,24 +104,56 @@ public class login extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        int a;
-// TODO add your handling code here:
-        a = JOptionPane.showConfirmDialog(null, "Do You really waln to close Application ","Select",JOptionPane.YES_NO_OPTION);
-        
-        if(a==0)
-        {
-            System.exit(0);
-        }
+//        int a;
+//// TODO add your handling code here:
+//        a = JOptionPane.showConfirmDialog(null, "Do You really waln to close Application ","Select",JOptionPane.YES_NO_OPTION);
+//        
+//        if(a==0)
+//        {
+//            System.exit(0);
+//   
+    //}
+new Signup().setVisible(true);
+this.setVisible(false);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-        if(jTextField1.getText().equals("admin") && jPasswordField1.getText().equals("admin")){
-            setVisible(false);
-            new home().setVisible(true);
-        }
-        else
-            JOptionPane.showMessageDialog(null, "Incorrect UserName Or Password ");
+      String un=jTextField1.getText();
+     String pwd= jPasswordField1.getText();
+     String unam = null,psw = null;
+         ResultSet rs;
+        if(jTextField1.getText().trim().length()==0 || jPasswordField1.getText().length()==0){
+       JOptionPane.showMessageDialog(this, "User name and password is required");
+     }
+     else
+         try {
+             Connection con = ConnectionProvider.getCon();
+             Statement stm=con.createStatement();
+             rs = stm.executeQuery("select * from users where uname='"+un+"' and password='"+pwd+"'");
+             while(rs.next()){
+        
+             unam=rs.getString("uname");
+             psw=rs.getString("password");
+             
+             }
+             if(un.equals(unam)&&pwd.equals(psw))
+             {
+                 home hm=new home();
+                 hm.setVisible(true);
+                 super.setVisible(false);
+                 con.close();
+             }
+              else
+              {
+                 JOptionPane.showMessageDialog(this,"Please Enter valid Username And Password");
+                 
+             }
+         } catch (SQLException ex) {
+         Logger.getLogger(login.class.getName()).log(Level.SEVERE, null, ex);
+         }
+         
+          
     }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jCheckBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jCheckBox1ActionPerformed
